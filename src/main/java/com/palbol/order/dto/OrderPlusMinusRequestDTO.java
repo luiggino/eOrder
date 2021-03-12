@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderRequestDTO {
+public class OrderPlusMinusRequestDTO {
     private Long productId;
     private Integer orderQuantity;
-    private Long customerId;
+    private Long orderId;
 }

@@ -1,5 +1,6 @@
 package com.palbol.order.controllers;
 
+import com.palbol.order.dto.OrderPlusMinusRequestDTO;
 import com.palbol.order.dto.OrderRequestDTO;
 import com.palbol.order.dto.OrderResponseDTO;
 import com.palbol.order.services.OrderService;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/orders")
@@ -28,8 +31,14 @@ public class OrderController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Long> add(@RequestBody OrderRequestDTO orderDTO) {
+    public ResponseEntity<Long> add(@Valid @RequestBody OrderRequestDTO orderDTO) {
         return new ResponseEntity<>(orderService.add(orderDTO), HttpStatus.OK);
+    }
+
+    @PutMapping("/plus")
+    public ResponseEntity<Void> plus(@Valid @RequestBody OrderPlusMinusRequestDTO orderDTO) {
+        orderService.plus(orderDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/plus/{orderId}/{productId}")
@@ -44,7 +53,7 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/del/{orderId}/{productId}")
+    @DeleteMapping("/del/{orderId}/{productId}")
     public ResponseEntity<Void> del(@PathVariable Long orderId, @PathVariable Long productId) {
         orderService.del(orderId, productId);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -1,7 +1,9 @@
 package com.palbol.order.services;
 
+import com.palbol.order.dto.OrderPlusMinusRequestDTO;
 import com.palbol.order.dto.OrderRequestDTO;
 import com.palbol.order.dto.OrderResponseDTO;
+import com.palbol.order.ex.OrderCreatedException;
 import com.palbol.order.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,24 +19,29 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    @SuppressWarnings("unchecked")
     public Long add(OrderRequestDTO orderDTO) {
-        return 1L;
+        return this.orderRepository.createOrder(
+                orderDTO.getProductId(),
+                orderDTO.getOrderQuantity(),
+                orderDTO.getCustomerId())
+                .orElseThrow(OrderCreatedException::new);
     }
 
-    @SuppressWarnings("unchecked")
+    public void plus(OrderPlusMinusRequestDTO orderDTO) {
+        this.orderRepository.updateOrder(orderDTO.getProductId(), orderDTO.getOrderId(), orderDTO.getOrderQuantity());
+    }
+
     public void plus(Long orderId, Long productId) {
-
+        this.orderRepository.updateOrder(productId, orderId, 1);
     }
 
-    @SuppressWarnings("unchecked")
     public void minus(Long orderId, Long productId) {
-
+        this.orderRepository.updateOrder(productId, orderId, -1);
     }
 
-    @SuppressWarnings("unchecked")
-    public void del(Long orderId, Long productId) {
 
+    public void del(Long orderId, Long productId) {
+        this.orderRepository.updateOrder(productId, orderId, 0);
     }
 
     @SuppressWarnings("unchecked")
